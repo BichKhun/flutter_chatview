@@ -48,6 +48,7 @@ class ChatView extends StatefulWidget {
     ChatBackgroundConfiguration? chatBackgroundConfig,
     this.typeIndicatorConfig,
     this.sendMessageBuilder,
+    this.selectReplyMessageCallback,
     this.showTypingIndicator = false,
     this.sendMessageConfig,
     required this.chatViewState,
@@ -103,6 +104,9 @@ class ChatView extends StatefulWidget {
 
   /// Provides builder which helps you to make custom text field and functionality.
   final ReplyMessageWithReturnWidget? sendMessageBuilder;
+
+  /// Provides callback when an action of select a message to reply occurs.
+  final SelectReplyMessageCallback? selectReplyMessageCallback;
 
   @Deprecated('Use [ChatController.setTypingIndicator]  instead')
 
@@ -198,55 +202,60 @@ class _ChatViewState extends State<ChatView>
           children: [
             if (widget.appBar != null) widget.appBar!,
             Expanded(
-              child: Stack(
+              child: Column(
                 children: [
                   if (chatViewState.isLoading)
-                    ChatViewStateWidget(
+                    Expanded(
+                        child: ChatViewStateWidget(
                       chatViewStateWidgetConfig:
                           chatViewStateConfig?.loadingWidgetConfig,
                       chatViewState: chatViewState,
-                    )
+                    ))
                   else if (chatViewState.noMessages)
-                    ChatViewStateWidget(
+                    Expanded(
+                        child: ChatViewStateWidget(
                       chatViewStateWidgetConfig:
                           chatViewStateConfig?.noMessageWidgetConfig,
                       chatViewState: chatViewState,
                       onReloadButtonTap: chatViewStateConfig?.onReloadButtonTap,
-                    )
+                    ))
                   else if (chatViewState.isError)
-                    ChatViewStateWidget(
+                    Expanded(
+                        child: ChatViewStateWidget(
                       chatViewStateWidgetConfig:
                           chatViewStateConfig?.errorWidgetConfig,
                       chatViewState: chatViewState,
                       onReloadButtonTap: chatViewStateConfig?.onReloadButtonTap,
-                    )
+                    ))
                   else if (chatViewState.hasMessages)
-                    ValueListenableBuilder<ReplyMessage>(
-                      valueListenable: replyMessage,
-                      builder: (_, state, child) {
-                        return ChatListWidget(
-                          /// TODO: Remove this in future releases.
-                          // ignore: deprecated_member_use_from_same_package
-                          showTypingIndicator: widget.showTypingIndicator,
-                          replyMessage: state,
-                          chatController: widget.chatController,
-                          chatBackgroundConfig: widget.chatBackgroundConfig,
-                          reactionPopupConfig: widget.reactionPopupConfig,
-                          typeIndicatorConfig: widget.typeIndicatorConfig,
-                          chatBubbleConfig: widget.chatBubbleConfig,
-                          loadMoreData: widget.loadMoreData,
-                          isLastPage: widget.isLastPage,
-                          replyPopupConfig: widget.replyPopupConfig,
-                          loadingWidget: widget.loadingWidget,
-                          messageConfig: widget.messageConfig,
-                          profileCircleConfig: widget.profileCircleConfig,
-                          repliedMessageConfig: widget.repliedMessageConfig,
-                          swipeToReplyConfig: widget.swipeToReplyConfig,
-                          assignReplyMessage: (message) => _sendMessageKey
-                              .currentState
-                              ?.assignReplyMessage(message),
-                        );
-                      },
+                    Expanded(
+                      child: ValueListenableBuilder<ReplyMessage>(
+                        valueListenable: replyMessage,
+                        builder: (_, state, child) {
+                          return ChatListWidget(
+                            /// TODO: Remove this in future releases.
+                            // ignore: deprecated_member_use_from_same_package
+                            showTypingIndicator: widget.showTypingIndicator,
+                            replyMessage: state,
+                            chatController: widget.chatController,
+                            chatBackgroundConfig: widget.chatBackgroundConfig,
+                            reactionPopupConfig: widget.reactionPopupConfig,
+                            typeIndicatorConfig: widget.typeIndicatorConfig,
+                            chatBubbleConfig: widget.chatBubbleConfig,
+                            loadMoreData: widget.loadMoreData,
+                            isLastPage: widget.isLastPage,
+                            replyPopupConfig: widget.replyPopupConfig,
+                            loadingWidget: widget.loadingWidget,
+                            messageConfig: widget.messageConfig,
+                            profileCircleConfig: widget.profileCircleConfig,
+                            repliedMessageConfig: widget.repliedMessageConfig,
+                            swipeToReplyConfig: widget.swipeToReplyConfig,
+                            assignReplyMessage: (message) => _sendMessageKey
+                                .currentState
+                                ?.assignReplyMessage(message),
+                          );
+                        },
+                      ),
                     ),
                   if (featureActiveConfig.enableTextField)
                     SendMessageWidget(
@@ -256,7 +265,10 @@ class _ChatViewState extends State<ChatView>
                       sendMessageConfig: widget.sendMessageConfig,
                       backgroundColor: chatBackgroundConfig.backgroundColor,
                       onSendTap: _onSendTap,
-                      onReplyCallback: (reply) => replyMessage.value = reply,
+                      onReplyCallback: (reply) {
+                        replyMessage.value = reply;
+                        widget.selectReplyMessageCallback?.call(reply);
+                      },
                       onReplyCloseCallback: () =>
                           replyMessage.value = const ReplyMessage(),
                     ),

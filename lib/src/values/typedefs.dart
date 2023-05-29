@@ -27,6 +27,7 @@ typedef StringMessageCallBack = void Function(
     String message, ReplyMessage replyMessage, MessageType messageType);
 typedef ReplyMessageWithReturnWidget = Widget Function(
     ReplyMessage? replyMessage);
+typedef SelectReplyMessageCallback = void Function(ReplyMessage replyMessage);
 typedef ReplyMessageCallBack = void Function(ReplyMessage replyMessage);
 typedef VoidCallBack = void Function();
 typedef DoubleCallBack = void Function(double, double);

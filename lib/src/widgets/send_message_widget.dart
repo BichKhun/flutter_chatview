@@ -99,12 +99,7 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
   Widget build(BuildContext context) {
     final replyTitle = "${PackageStrings.replyTo} $_replyTo";
     return widget.sendMessageBuilder != null
-        ? Positioned(
-            right: 0,
-            left: 0,
-            bottom: 0,
-            child: widget.sendMessageBuilder!(replyMessage),
-          )
+        ? widget.sendMessageBuilder!(replyMessage)
         : Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
