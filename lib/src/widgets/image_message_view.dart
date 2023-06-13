@@ -24,9 +24,9 @@ import 'dart:io';
 
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
+import 'package:chatview/src/widgets/reaction_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'reaction_widget.dart';
 import 'share_icon.dart';
 
 class ImageMessageView extends StatelessWidget {
@@ -134,10 +134,14 @@ class ImageMessageView extends StatelessWidget {
               ),
             ),
             if (message.reaction.reactions.isNotEmpty)
-              ReactionWidget(
-                isMessageBySender: isMessageBySender,
-                reaction: message.reaction,
-                messageReactionConfig: messageReactionConfig,
+              Positioned(
+                left: 10,
+                bottom: 0,
+                child: ReactionWidget(
+                  isMessageBySender: isMessageBySender,
+                  reaction: message.reaction,
+                  messageReactionConfig: messageReactionConfig,
+                ),
               ),
           ],
         ),
