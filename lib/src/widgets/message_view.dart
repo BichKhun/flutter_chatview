@@ -23,11 +23,9 @@ import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chatview/src/extensions/extensions.dart';
 import '../utils/constants/constants.dart';
 import 'image_message_view.dart';
 import 'text_message_view.dart';
-import 'reaction_widget.dart';
 import 'voice_message_view.dart';
 
 class MessageView extends StatefulWidget {
@@ -155,8 +153,8 @@ class _MessageViewState extends State<MessageView>
   }
 
   Widget get _messageView {
-    final message = widget.message.message;
-    final emojiMessageConfiguration = messageConfig?.emojiMessageConfig;
+    // final message = widget.message.message;
+    // final emojiMessageConfiguration = messageConfig?.emojiMessageConfig;
     return Padding(
       padding: EdgeInsets.only(
         bottom: widget.message.reaction.reactions.isNotEmpty ? 6 : 0,
@@ -165,41 +163,42 @@ class _MessageViewState extends State<MessageView>
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           (() {
-                if (message.isAllEmoji) {
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: emojiMessageConfiguration?.padding ??
-                            EdgeInsets.fromLTRB(
-                              leftPadding2,
-                              4,
-                              leftPadding2,
-                              widget.message.reaction.reactions.isNotEmpty
-                                  ? 14
-                                  : 0,
-                            ),
-                        child: Transform.scale(
-                          scale: widget.shouldHighlight
-                              ? widget.highlightScale
-                              : 1.0,
-                          child: Text(
-                            message,
-                            style: emojiMessageConfiguration?.textStyle ??
-                                const TextStyle(fontSize: 30),
-                          ),
-                        ),
-                      ),
-                      if (widget.message.reaction.reactions.isNotEmpty)
-                        ReactionWidget(
-                          reaction: widget.message.reaction,
-                          messageReactionConfig:
-                              messageConfig?.messageReactionConfig,
-                          isMessageBySender: widget.isMessageBySender,
-                        ),
-                    ],
-                  );
-                } else if (widget.message.messageType.isImage) {
+                // if (message.isAllEmoji) {
+                //   return Stack(
+                //     clipBehavior: Clip.none,
+                //     children: [
+                //       Padding(
+                //         padding: emojiMessageConfiguration?.padding ??
+                //             EdgeInsets.fromLTRB(
+                //               leftPadding2,
+                //               4,
+                //               leftPadding2,
+                //               widget.message.reaction.reactions.isNotEmpty
+                //                   ? 14
+                //                   : 0,
+                //             ),
+                //         child: Transform.scale(
+                //           scale: widget.shouldHighlight
+                //               ? widget.highlightScale
+                //               : 1.0,
+                //           child: Text(
+                //             message,
+                //             style: emojiMessageConfiguration?.textStyle ??
+                //                 const TextStyle(fontSize: 30),
+                //           ),
+                //         ),
+                //       ),
+                //       if (widget.message.reaction.reactions.isNotEmpty)
+                //         ReactionWidget(
+                //           reaction: widget.message.reaction,
+                //           messageReactionConfig:
+                //               messageConfig?.messageReactionConfig,
+                //           isMessageBySender: widget.isMessageBySender,
+                //         ),
+                //     ],
+                //   );
+                // } else
+                if (widget.message.messageType.isImage) {
                   return ImageMessageView(
                     message: widget.message,
                     isMessageBySender: widget.isMessageBySender,

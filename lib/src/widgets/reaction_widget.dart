@@ -23,6 +23,7 @@ import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/utils/measure_size.dart';
 import 'package:chatview/src/widgets/reactions_bottomsheet.dart';
 import 'package:flutter/material.dart';
+import 'package:logic_module/extension/int_extension.dart';
 
 import '../../chatview.dart';
 
@@ -50,9 +51,12 @@ class ReactionWidget extends StatefulWidget {
 class _ReactionWidgetState extends State<ReactionWidget> {
   bool needToExtend = false;
 
+  static const MaxUserCount = 6; // 表情回复列表最大显示人数
+
   MessageReactionConfiguration? get messageReactionConfig =>
       widget.messageReactionConfig;
-  final _reactionTextStyle = const TextStyle(fontSize: 13);
+  final _reactionTextStyle =
+      const TextStyle(fontSize: 13, color: Color(0xff161717), height: 1.5);
   ChatController? chatController;
 
   @override
@@ -68,88 +72,122 @@ class _ReactionWidgetState extends State<ReactionWidget> {
     //// Convert into set to remove reduntant values
     final reactionsSet = widget.reaction.reactions.toSet();
     return Positioned(
-      bottom: 0,
-      right: widget.isMessageBySender && needToExtend ? 0 : null,
-      child: InkWell(
-        onTap: () => chatController != null
-            ? ReactionsBottomSheet().show(
-                context: context,
-                reaction: widget.reaction,
-                chatController: chatController!,
-                reactionsBottomSheetConfig:
-                    messageReactionConfig?.reactionsBottomSheetConfig,
-              )
-            : null,
-        child: MeasureSize(
-          onSizeChange: (extend) => setState(() => needToExtend = extend),
-          child: Container(
-            padding: messageReactionConfig?.padding ??
-                const EdgeInsets.symmetric(vertical: 1.7, horizontal: 6),
-            margin: messageReactionConfig?.margin ??
-                EdgeInsets.only(
-                  left: widget.isMessageBySender ? 10 : 16,
-                  right: 10,
+        bottom: 0,
+        right: widget.isMessageBySender && needToExtend ? 0 : null,
+        child: InkWell(
+          onTap: () => chatController != null
+              ? ReactionsBottomSheet().show(
+                  context: context,
+                  reaction: widget.reaction,
+                  chatController: chatController!,
+                  reactionsBottomSheetConfig:
+                      messageReactionConfig?.reactionsBottomSheetConfig,
+                )
+              : null,
+          child: MeasureSize(
+            onSizeChange: (extend) => setState(() => needToExtend = extend),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: 24.px),
+              child: Container(
+                padding: messageReactionConfig?.padding ??
+                    const EdgeInsets.symmetric(vertical: 1.7, horizontal: 6),
+                margin: messageReactionConfig?.margin ??
+                    EdgeInsets.only(
+                      left: widget.isMessageBySender ? 10 : 16,
+                      right: 10,
+                    ),
+                decoration: BoxDecoration(
+                  color: widget.isMessageBySender
+                      ? const Color(0xffCADFFC)
+                      : const Color(0xffE8E9EB),
+                  borderRadius: messageReactionConfig?.borderRadius ??
+                      BorderRadius.circular(16),
+                  // border: Border.all(
+                  //   color: messageReactionConfig?.borderColor ?? Colors.white,
+                  //   width: messageReactionConfig?.borderWidth ?? 1,
+                  // ),
                 ),
-            decoration: BoxDecoration(
-              color: messageReactionConfig?.backgroundColor ??
-                  Colors.grey.shade200,
-              borderRadius: messageReactionConfig?.borderRadius ??
-                  BorderRadius.circular(16),
-              border: Border.all(
-                color: messageReactionConfig?.borderColor ?? Colors.white,
-                width: messageReactionConfig?.borderWidth ?? 1,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 4),
+                        child: Text(
+                          reactionsSet.join(' '),
+                          style: TextStyle(
+                            fontSize: messageReactionConfig?.reactionSize ?? 13,
+                          ),
+                        )),
+                    Container(
+                      width: 1.px,
+                      height: 12.px,
+                      color: widget.isMessageBySender
+                          ? const Color(0xffAFCEFA)
+                          : const Color(0xffDCDDE0),
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(right: 8.px),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: 4.px, right: 8.px, bottom: 3.px),
+                        child: Text(getReplyEmotionUserIdsText(),
+                            style:
+                                messageReactionConfig?.reactionCountTextStyle ??
+                                    _reactionTextStyle)),
+                    // if ((chatController?.chatUsers.length ?? 0) > 1) ...[
+                    //   if (!(widget.reaction.reactedUserIds.length > 3) &&
+                    //       !(reactionsSet.length > 1))
+                    //     ...List.generate(
+                    //       widget.reaction.reactedUserIds.length,
+                    //       (reactedUserIndex) => widget
+                    //           .reaction.reactedUserIds[reactedUserIndex]
+                    //           .getUserProfilePicture(
+                    //         getChatUser: (userId) =>
+                    //             chatController?.getUserFromId(userId),
+                    //         profileCirclePadding:
+                    //             messageReactionConfig?.profileCirclePadding,
+                    //         profileCircleRadius:
+                    //             messageReactionConfig?.profileCircleRadius,
+                    //       ),
+                    //     ),
+                    //   if (widget.reaction.reactedUserIds.length > 3 &&
+                    //       !(reactionsSet.length > 1))
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(left: 2),
+                    //       child: Text(
+                    //         '+${widget.reaction.reactedUserIds.length}',
+                    //         style: messageReactionConfig
+                    //                 ?.reactedUserCountTextStyle ??
+                    //             _reactionTextStyle,
+                    //       ),
+                    //     ),
+                    //   if (reactionsSet.length > 1)
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(left: 2),
+                    //       child: Text(
+                    //         widget.reaction.reactedUserIds.length.toString(),
+                    //         style:
+                    //             messageReactionConfig?.reactionCountTextStyle ??
+                    //                 _reactionTextStyle,
+                    //       ),
+                    //     ),
+                    // ],
+                  ],
+                ),
               ),
             ),
-            child: Row(
-              children: [
-                Text(
-                  reactionsSet.join(' '),
-                  style: TextStyle(
-                    fontSize: messageReactionConfig?.reactionSize ?? 13,
-                  ),
-                ),
-                if ((chatController?.chatUsers.length ?? 0) > 1) ...[
-                  if (!(widget.reaction.reactedUserIds.length > 3) &&
-                      !(reactionsSet.length > 1))
-                    ...List.generate(
-                      widget.reaction.reactedUserIds.length,
-                      (reactedUserIndex) => widget
-                          .reaction.reactedUserIds[reactedUserIndex]
-                          .getUserProfilePicture(
-                        getChatUser: (userId) =>
-                            chatController?.getUserFromId(userId),
-                        profileCirclePadding:
-                            messageReactionConfig?.profileCirclePadding,
-                        profileCircleRadius:
-                            messageReactionConfig?.profileCircleRadius,
-                      ),
-                    ),
-                  if (widget.reaction.reactedUserIds.length > 3 &&
-                      !(reactionsSet.length > 1))
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2),
-                      child: Text(
-                        '+${widget.reaction.reactedUserIds.length}',
-                        style:
-                            messageReactionConfig?.reactedUserCountTextStyle ??
-                                _reactionTextStyle,
-                      ),
-                    ),
-                  if (reactionsSet.length > 1)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2),
-                      child: Text(
-                        widget.reaction.reactedUserIds.length.toString(),
-                        style: messageReactionConfig?.reactionCountTextStyle ??
-                            _reactionTextStyle,
-                      ),
-                    ),
-                ],
-              ],
-            ),
           ),
-        ),
-      ),
-    );
+        ));
+  }
+
+  String getReplyEmotionUserIdsText() {
+    final replyEmotionUserIds = widget.reaction.reactedUserIds;
+    if (replyEmotionUserIds.length > MaxUserCount) {
+      final showIds = replyEmotionUserIds.sublist(0, MaxUserCount);
+
+      return '${showIds.join(', ')},...共${replyEmotionUserIds.length}人';
+    }
+    return replyEmotionUserIds.join(', ');
   }
 }

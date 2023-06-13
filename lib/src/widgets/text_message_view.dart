@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
+import 'package:logic_module/extension/int_extension.dart';
+import 'package:logic_module/utils/emotions_manager.dart';
 
 import '../utils/constants/constants.dart';
 import 'link_preview.dart';
@@ -72,43 +74,45 @@ class TextMessageView extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
+        // 气泡背景
+        Positioned(
+            left: isMessageBySender ? null : (9 - 10).px,
+            right: isMessageBySender ? (9 - 10).px : null,
+            top: 2.px,
+            child: Image.asset(_bubbleBackgroundImageUrl, package: 'chatview')),
         Container(
-          constraints: BoxConstraints(
-              maxWidth: chatBubbleMaxWidth ??
-                  MediaQuery.of(context).size.width * 0.75),
-          padding: _padding ??
-              const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
-          margin: _margin ??
-              EdgeInsets.fromLTRB(
-                  5, 0, 6, message.reaction.reactions.isNotEmpty ? 15 : 2),
-          decoration: BoxDecoration(
-            color: highlightMessage ? highlightColor : _color,
-            borderRadius: _borderRadius(textMessage),
-          ),
-          child: textMessage.isUrl
-              ? LinkPreview(
-                  linkPreviewConfig: _linkPreviewConfig,
-                  url: textMessage,
-                )
-              : Text(
-                  textMessage,
-                  style: _textStyle ??
-                      textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+            // constraints: BoxConstraints(
+            //     maxWidth: chatBubbleMaxWidth ??
+            //         MediaQuery.of(context).size.width * 0.75),
+            margin: EdgeInsets.fromLTRB(isMessageBySender ? 116.px : 9.px, 2.px,
+                isMessageBySender ? 9.px : 116.px, 8.px),
+            padding: _padding ??
+                const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 9,
                 ),
-        ),
-        if (message.reaction.reactions.isNotEmpty)
-          ReactionWidget(
-            key: key,
-            isMessageBySender: isMessageBySender,
-            reaction: message.reaction,
-            messageReactionConfig: messageReactionConfig,
-          ),
+            decoration: BoxDecoration(
+              color: highlightMessage ? highlightColor : _color,
+              borderRadius: _borderRadius(textMessage),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              textMessage.isUrl
+                  ? LinkPreview(
+                      linkPreviewConfig: _linkPreviewConfig,
+                      url: textMessage,
+                    )
+                  : textMessageWidgets(textMessage, textTheme),
+              if (message.reaction.reactions.isNotEmpty)
+                Padding(
+                    padding: EdgeInsets.only(top: 8.px),
+                    child: ReactionWidget(
+                      key: key,
+                      isMessageBySender: isMessageBySender,
+                      reaction: message.reaction,
+                      messageReactionConfig: messageReactionConfig,
+                    ))
+            ])),
       ],
     );
   }
@@ -142,4 +146,38 @@ class TextMessageView extends StatelessWidget {
   Color get _color => isMessageBySender
       ? outgoingChatBubbleConfig?.color ?? Colors.purple
       : inComingChatBubbleConfig?.color ?? Colors.grey.shade500;
+
+  String get _bubbleBackgroundImageUrl => isMessageBySender
+      ? 'images/msg_corner_blue_r.png'
+      : 'images/msg_corner_grey_l.png';
+
+  RichText textMessageWidgets(String txt, TextTheme textTheme) {
+    final style = _textStyle ??
+        textTheme.bodyMedium!.copyWith(
+          color: Colors.white,
+          fontSize: 16,
+        );
+    List<InlineSpan> spans = [];
+    txt.splitMapJoin(RegExp(r'\[.*?\]'), onMatch: (m) {
+      final emotionName = m.group(0);
+      final emotionItem =
+          EmotionsManager().fetchEmotionItemWithName(emotionName);
+      final emotionUrl = emotionItem?.iconPng ?? '';
+      if (emotionUrl.isNotEmpty) {
+        final emotionSpan = WidgetSpan(
+            child: Image.asset(emotionUrl,
+                fit: BoxFit.fitWidth, width: 30, height: 30),
+            alignment: PlaceholderAlignment.middle);
+        spans.add(emotionSpan);
+        return emotionName ?? '';
+      } else {
+        spans.add(TextSpan(text: emotionName, style: style));
+        return emotionName ?? '';
+      }
+    }, onNonMatch: (n) {
+      spans.add(TextSpan(text: n, style: style));
+      return n;
+    });
+    return RichText(text: TextSpan(children: spans));
+  }
 }

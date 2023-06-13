@@ -206,10 +206,10 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
                         showIndicator: value as bool,
                         profilePic: profileCircleConfig?.profileImageUrl,
                       )),
-          SizedBox(
-            height: MediaQuery.of(context).size.width *
-                (widget.replyMessage.message.isNotEmpty ? 0.3 : 0.14),
-          ),
+          // SizedBox(
+          //   height: MediaQuery.of(context).size.width *
+          //       (widget.replyMessage.message.isNotEmpty ? 0.3 : 0.14),
+          // ),
         ],
       ),
     );
