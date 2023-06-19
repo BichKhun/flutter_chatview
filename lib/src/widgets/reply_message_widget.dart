@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chatview/src/extensions/extensions.dart';
@@ -39,7 +40,7 @@ class ReplyMessageWidget extends StatelessWidget {
   }) : super(key: key);
 
   /// Provides message instance of chat.
-  final Message message;
+  final MessageModel message;
 
   /// Provides configurations related to replied message such as textstyle
   /// padding, margin etc. Also, this widget is located upon chat bubble.

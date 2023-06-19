@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/src/utils/constants/constants.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class ChatBubbleWidget extends StatefulWidget {
   }) : super(key: key);
 
   /// Represent current instance of message.
-  final Message message;
+  final MessageModel message;
 
   /// Give callback once user long press on chat bubble.
   final DoubleCallBack onLongPress;

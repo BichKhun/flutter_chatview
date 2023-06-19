@@ -22,6 +22,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chat/chat.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
 import 'package:chatview/src/widgets/reaction_widget.dart';
@@ -41,7 +42,7 @@ class ImageMessageView extends StatelessWidget {
   }) : super(key: key);
 
   /// Provides message instance of chat.
-  final Message message;
+  final MessageModel message;
 
   /// Represents current message is sent by current user.
   final bool isMessageBySender;

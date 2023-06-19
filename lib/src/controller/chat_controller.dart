@@ -21,13 +21,14 @@
  */
 import 'dart:async';
 
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
 class ChatController {
   /// Represents initial message list in chat which can be add by user.
-  List<Message> initialMessageList;
+  List<MessageModel> initialMessageList;
 
   ScrollController scrollController;
 
@@ -63,13 +64,14 @@ class ChatController {
   });
 
   /// Represents message stream of chat
-  StreamController<List<Message>> messageStreamController = StreamController();
+  StreamController<List<MessageModel>> messageStreamController =
+      StreamController();
 
   /// Used to dispose stream.
   void dispose() => messageStreamController.close();
 
   /// Used to add message in message list.
-  void addMessage(Message message) {
+  void addMessage(MessageModel message) {
     initialMessageList.add(message);
     messageStreamController.sink.add(initialMessageList);
   }
@@ -96,7 +98,7 @@ class ChatController {
       message.reaction.reactions.add(emoji);
       message.reaction.reactedUserIds.add(userId);
     }
-    initialMessageList[indexOfMessage] = Message(
+    initialMessageList[indexOfMessage] = MessageModel(
       id: messageId,
       message: message.message,
       createdAt: message.createdAt,
@@ -120,7 +122,7 @@ class ChatController {
       );
 
   /// Function for loading data while pagination.
-  void loadMoreData(List<Message> messageList) {
+  void loadMoreData(List<MessageModel> messageList) {
     initialMessageList.addAll(messageList);
     messageStreamController.sink.add(initialMessageList);
   }

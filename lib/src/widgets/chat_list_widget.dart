@@ -22,6 +22,7 @@
 import 'dart:async';
 import 'dart:io' if (kIsWeb) 'dart:html';
 
+import 'package:chat/chat.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/widgets/chat_groupedlist_widget.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -88,7 +89,7 @@ class ChatListWidget extends StatefulWidget {
   final TypeIndicatorConfiguration? typeIndicatorConfig;
 
   /// Provides reply message when user swipe to chat bubble.
-  final ReplyMessage replyMessage;
+  final MessageModel? replyMessage;
 
   /// Provides configuration for reply snack bar's appearance and options.
   final ReplyPopupConfiguration? replyPopupConfig;
@@ -116,7 +117,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
 
   ChatController get chatController => widget.chatController;
 
-  List<Message> get messageList => chatController.initialMessageList;
+  List<MessageModel> get messageList => chatController.initialMessageList;
 
   ScrollController get scrollController => chatController.scrollController;
 
@@ -246,7 +247,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
   }
 
   void _showReplyPopup({
-    required Message message,
+    required MessageModel message,
     required bool sendByCurrentUser,
   }) {
     final replyPopup = widget.replyPopupConfig;

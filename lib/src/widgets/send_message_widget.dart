@@ -23,6 +23,7 @@ import 'dart:io' if (kIsWeb) 'dart:html';
 import 'dart:ui';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/utils/package_strings.dart';
@@ -311,19 +312,19 @@ class SendMessageWidgetState extends State<SendMessageWidget> {
     }
   }
 
-  void assignReplyMessage(Message message) {
-    if (currentUser != null) {
-      _replyMessage.value = ReplyMessage(
-        message: message.message,
-        replyBy: currentUser!.id,
-        replyTo: message.sendBy,
-        messageType: message.messageType,
-        messageId: message.id,
-        voiceMessageDuration: message.voiceMessageDuration,
-      );
-    }
+  void assignReplyMessage(MessageModel message) {
+    // if (currentUser != null) {
+    //   _replyMessage.value = ReplyMessage(
+    //     message: message.message,
+    //     replyBy: currentUser!.id,
+    //     replyTo: message.sendBy,
+    //     messageType: message.messageType,
+    //     messageId: message.id,
+    //     voiceMessageDuration: message.voiceMessageDuration,
+    //   );
+    // }
     FocusScope.of(context).requestFocus(_focusNode);
-    if (widget.onReplyCallback != null) widget.onReplyCallback!(replyMessage);
+    if (widget.onReplyCallback != null) widget.onReplyCallback!(message);
   }
 
   void _onCloseTap() {

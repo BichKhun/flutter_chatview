@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/src/models/models.dart';
 import 'package:chatview/src/models/voice_message_configuration.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class MessageConfiguration {
   final EmojiMessageConfiguration? emojiMessageConfig;
 
   /// Provides builder to create view for custom messages.
-  final Widget Function(Message)? customMessageBuilder;
+  final Widget Function(MessageModel)? customMessageBuilder;
 
   /// Configurations for voice message bubble
   final VoiceMessageConfiguration? voiceMessageConfig;

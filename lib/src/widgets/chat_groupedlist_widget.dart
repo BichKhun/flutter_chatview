@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
@@ -77,7 +78,7 @@ class ChatGroupedListWidget extends StatefulWidget {
   final TypeIndicatorConfiguration? typeIndicatorConfig;
 
   /// Provides reply message if actual message is sent by replying any message.
-  final ReplyMessage replyMessage;
+  final MessageModel? replyMessage;
 
   /// Provides callback for assigning reply message when user swipe on chat bubble.
   final MessageCallBack assignReplyMessage;
@@ -86,7 +87,7 @@ class ChatGroupedListWidget extends StatefulWidget {
   final VoidCallBack onChatListTap;
 
   /// Provides callback when user press chat bubble for certain time then usual.
-  final void Function(double, double, Message) onChatBubbleLongPress;
+  final void Function(double, double, MessageModel) onChatBubbleLongPress;
 
   /// Provide flag for turn on/off to see message crated time view when user
   /// swipe whole chat.
@@ -215,7 +216,7 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
     );
   }
 
-  Future<void> _onReplyTap(String id, List<Message>? messages) async {
+  Future<void> _onReplyTap(String id, List<MessageModel>? messages) async {
     // Finds the replied message if exists
     final repliedMessages = messages?.firstWhere((message) => id == message.id);
 
@@ -274,11 +275,11 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
   }
 
   Widget get _chatStreamBuilder {
-    return StreamBuilder<List<Message>>(
+    return StreamBuilder<List<MessageModel>>(
       stream: chatController?.messageStreamController.stream,
       builder: (context, snapshot) {
         return snapshot.connectionState.isActive
-            ? GroupedListView<Message, String>(
+            ? GroupedListView<MessageModel, String>(
                 shrinkWrap: true,
                 elements: snapshot.data!,
                 groupBy: (element) => element.createdAt.getDateFromDateTime,

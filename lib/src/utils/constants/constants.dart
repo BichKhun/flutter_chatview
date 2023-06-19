@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -77,11 +78,11 @@ Widget sendMessageAnimationBuilder(MessageStatus status) {
 
 /// Default builder when the message has got seen as of now
 /// is visible at the bottom of the chat bubble
-Widget lastSeenAgoBuilder(Message message, String formattedDate) {
+Widget lastSeenAgoBuilder(MessageModel message, String formattedDate) {
   return Padding(
     padding: const EdgeInsets.all(2),
     child: Text(
-      'Seen ${applicationDateFormatter(message.createdAt)}    ',
+      'Seen ${applicationDateFormatter(message.createdAt ?? DateTime.now())}    ',
       style: const TextStyle(color: Colors.grey, fontSize: 12),
     ),
   );

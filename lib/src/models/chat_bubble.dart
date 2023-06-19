@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import '../../chatview.dart';
 
@@ -50,7 +51,7 @@ class ChatBubble {
 
   /// Callback when a message has been displayed for the first
   /// time only
-  final Function(Message message)? onMessageRead;
+  final Function(MessageModel message)? onMessageRead;
 
   const ChatBubble({
     this.color,

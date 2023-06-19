@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
     profilePhoto: Data.profileImage,
   );
   final _chatController = ChatController(
-    initialMessageList: Data.messageList,
+    initialMessageList: [],
     scrollController: ScrollController(),
     chatUsers: [
       ChatUser(
@@ -275,16 +275,16 @@ class _ChatScreenState extends State<ChatScreen> {
     MessageType messageType,
   ) {
     final id = int.parse(Data.messageList.last.id) + 1;
-    _chatController.addMessage(
-      Message(
-        id: id.toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
-    );
+    // _chatController.addMessage(
+    //   Message(
+    //     id: id.toString(),
+    //     createdAt: DateTime.now(),
+    //     message: message,
+    //     sendBy: currentUser.id,
+    //     replyMessage: replyMessage,
+    //     messageType: messageType,
+    //   ),
+    // );
     Future.delayed(const Duration(milliseconds: 300), () {
       _chatController.initialMessageList.last.setStatus =
           MessageStatus.undelivered;

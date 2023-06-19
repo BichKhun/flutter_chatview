@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+import 'package:chat/chat.dart';
 import 'package:flutter/cupertino.dart';
 import '../../chatview.dart';
 import '../utils/constants/constants.dart';
@@ -34,7 +35,7 @@ class ReceiptsWidgetConfig {
   /// Just like Instagram messages receipts are displayed at the bottom of last
   /// message. If in case you want to modify it using your custom widget you can
   /// utilize this function.
-  final Widget Function(Message message, String formattedDate)?
+  final Widget Function(MessageModel message, String formattedDate)?
       lastSeenAgoBuilder;
 
   /// Whether to show receipts in all messages or not defaults to [ShowReceiptsIn.lastMessage]

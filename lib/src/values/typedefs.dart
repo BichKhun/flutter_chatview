@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +28,11 @@ typedef StringMessageCallBack = void Function(
     String message, ReplyMessage replyMessage, MessageType messageType);
 typedef ReplyMessageWithReturnWidget = Widget Function(
     ReplyMessage? replyMessage);
-typedef SelectReplyMessageCallback = void Function(ReplyMessage replyMessage);
-typedef ReplyMessageCallBack = void Function(ReplyMessage replyMessage);
+typedef SelectReplyMessageCallback = void Function(MessageModel? replyMessage);
+typedef ReplyMessageCallBack = void Function(MessageModel replyMessage);
 typedef VoidCallBack = void Function();
 typedef DoubleCallBack = void Function(double, double);
-typedef MessageCallBack = void Function(Message message);
+typedef MessageCallBack = void Function(MessageModel message);
 typedef VoidCallBackWithFuture = Future<void> Function();
 typedef StringsCallBack = void Function(String emoji, String messageId);
 typedef StringWithReturnWidget = Widget Function(String separator);

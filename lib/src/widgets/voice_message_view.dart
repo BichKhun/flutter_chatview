@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/models/voice_message_configuration.dart';
 import 'package:chatview/src/widgets/reaction_widget.dart';
@@ -27,7 +28,7 @@ class VoiceMessageView extends StatefulWidget {
   final double screenWidth;
 
   /// Provides message instance of chat.
-  final Message message;
+  final MessageModel message;
   final Function(int)? onMaxDuration;
 
   /// Represents current message is sent by current user.

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
 import 'package:logic_module/extension/int_extension.dart';
 import 'package:logic_module/utils/emotions_manager.dart';
@@ -47,7 +47,7 @@ class TextMessageView extends StatelessWidget {
   final bool isMessageBySender;
 
   /// Provides message instance of chat.
-  final Message message;
+  final MessageModel message;
 
   /// Allow users to give max width of chat bubble.
   final double? chatBubbleMaxWidth;
@@ -97,12 +97,7 @@ class TextMessageView extends StatelessWidget {
             ),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              textMessage.isUrl
-                  ? LinkPreview(
-                      linkPreviewConfig: _linkPreviewConfig,
-                      url: textMessage,
-                    )
-                  : textMessageWidgets(textMessage, textTheme),
+              assembledMesageContents(textTheme),
               if (message.reaction.reactions.isNotEmpty)
                 Padding(
                     padding: EdgeInsets.only(top: 8.px),
@@ -151,33 +146,63 @@ class TextMessageView extends StatelessWidget {
       ? 'images/msg_corner_blue_r.png'
       : 'images/msg_corner_grey_l.png';
 
-  RichText textMessageWidgets(String txt, TextTheme textTheme) {
+  RichText assembledMesageContents(TextTheme textTheme) {
     final style = _textStyle ??
         textTheme.bodyMedium!.copyWith(
           color: Colors.white,
           fontSize: 16,
         );
     List<InlineSpan> spans = [];
-    txt.splitMapJoin(RegExp(r'\[.*?\]'), onMatch: (m) {
-      final emotionName = m.group(0);
-      final emotionItem =
-          EmotionsManager().fetchEmotionItemWithName(emotionName);
-      final emotionUrl = emotionItem?.iconPng ?? '';
-      if (emotionUrl.isNotEmpty) {
-        final emotionSpan = WidgetSpan(
-            child: Image.asset(emotionUrl,
-                fit: BoxFit.fitWidth, width: 30, height: 30),
-            alignment: PlaceholderAlignment.middle);
-        spans.add(emotionSpan);
-        return emotionName ?? '';
-      } else {
-        spans.add(TextSpan(text: emotionName, style: style));
-        return emotionName ?? '';
+    for (final content in message.contents) {
+      if (content.contentType == MessageContentType.text) {
+        final textContont = content as MessageContentText;
+        spans.add(TextSpan(text: textContont.text, style: style));
+      } else if (content.contentType == MessageContentType.face) {
+        final faceContent = content as MessageContentFace;
+        final emotionName = '[${faceContent.name}]';
+        final emotionItem =
+            EmotionsManager().fetchEmotionItemWithName(emotionName);
+        final emotionUrl = emotionItem?.iconPng ?? '';
+        if (emotionUrl.isNotEmpty) {
+          final emotionSpan = WidgetSpan(
+              child: Image.asset(emotionUrl,
+                  fit: BoxFit.fitWidth, width: 30, height: 30),
+              alignment: PlaceholderAlignment.middle);
+          spans.add(emotionSpan);
+        } else {
+          spans.add(TextSpan(text: emotionName, style: style));
+        }
+      } else if (content.contentType == MessageContentType.href) {
+        final hrefContent = content as MessageContentHref;
+        final widgetSpan = WidgetSpan(
+            child: LinkPreview(
+          linkPreviewConfig: _linkPreviewConfig,
+          url: hrefContent.text,
+        ));
+        spans.add(widgetSpan);
+      } else if (content.contentType == MessageContentType.reply) {
+        final reply = content as MessageContentReply;
+        final replyTxt = reply.generateReplyBlockStr();
+        final replyWidget = Container(
+          margin: const EdgeInsets.only(bottom: 5),
+          color: const Color(0xfffdfeff),
+          padding: const EdgeInsets.all(6),
+          child: Text(
+            replyTxt,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                color: Color(0xff959ea6), fontSize: 13, height: 1.5),
+          ),
+        );
+        spans.add(WidgetSpan(
+            child: replyWidget,
+            alignment: PlaceholderAlignment.middle,
+            baseline: TextBaseline.ideographic));
       }
-    }, onNonMatch: (n) {
-      spans.add(TextSpan(text: n, style: style));
-      return n;
-    });
-    return RichText(text: TextSpan(children: spans));
+    }
+    return RichText(
+      text: TextSpan(children: spans),
+    );
   }
 }

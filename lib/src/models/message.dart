@@ -31,19 +31,19 @@ class Message {
   final GlobalKey key;
 
   /// Provides actual message it will be text or image/audio file path.
-  final String message;
+  String message;
 
   /// Provides message created date time.
-  final DateTime createdAt;
+  DateTime createdAt = DateTime.now();
 
   /// Provides id of sender of message.
-  final String sendBy;
+  String sendBy;
 
   /// Provides reply message if user triggers any reply on any message.
   final ReplyMessage replyMessage;
 
   /// Represents reaction on message.
-  final Reaction reaction;
+  Reaction reaction;
 
   /// Provides message type.
   final MessageType messageType;
@@ -56,15 +56,17 @@ class Message {
 
   Message({
     this.id = '',
-    required this.message,
-    required this.createdAt,
-    required this.sendBy,
+    this.message = '',
+    this.sendBy = '',
+    DateTime? createdAt,
+    // this.createdAt = DateTime.now(),
     this.replyMessage = const ReplyMessage(),
     Reaction? reaction,
     this.messageType = MessageType.text,
     this.voiceMessageDuration,
     MessageStatus status = MessageStatus.pending,
-  })  : reaction = reaction ?? Reaction(reactions: [], reactedUserIds: []),
+  })  : createdAt = createdAt ?? DateTime.now(),
+        reaction = reaction ?? Reaction(reactions: [], reactedUserIds: []),
         key = GlobalKey(),
         _status = ValueNotifier(status),
         assert(

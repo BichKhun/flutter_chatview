@@ -19,9 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
-
-import 'models.dart';
 
 class ReactionPopupConfiguration {
   /// Used for background color in reaction pop-up.
@@ -52,7 +51,7 @@ class ReactionPopupConfiguration {
   final GlassMorphismConfiguration? glassMorphismConfig;
 
   /// Provides callback when user react on message.
-  final void Function(Message message, String emoji)? userReactionCallback;
+  final void Function(MessageModel message, String emoji)? userReactionCallback;
 
   const ReactionPopupConfiguration({
     this.userReactionCallback,

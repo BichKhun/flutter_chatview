@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_list_widget.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
@@ -144,8 +145,7 @@ class ChatView extends StatefulWidget {
 class _ChatViewState extends State<ChatView>
     with SingleTickerProviderStateMixin {
   final GlobalKey<SendMessageWidgetState> _sendMessageKey = GlobalKey();
-  ValueNotifier<ReplyMessage> replyMessage =
-      ValueNotifier(const ReplyMessage());
+  ValueNotifier<MessageModel?> replyMessage = ValueNotifier(null);
 
   ChatController get chatController => widget.chatController;
 
@@ -229,7 +229,7 @@ class _ChatViewState extends State<ChatView>
                     ))
                   else if (chatViewState.hasMessages)
                     Expanded(
-                      child: ValueListenableBuilder<ReplyMessage>(
+                      child: ValueListenableBuilder<MessageModel?>(
                         valueListenable: replyMessage,
                         builder: (_, state, child) {
                           return ChatListWidget(
@@ -269,8 +269,7 @@ class _ChatViewState extends State<ChatView>
                         replyMessage.value = reply;
                         widget.selectReplyMessageCallback?.call(reply);
                       },
-                      onReplyCloseCallback: () =>
-                          replyMessage.value = const ReplyMessage(),
+                      onReplyCloseCallback: () => replyMessage.value = null,
                     ),
                 ],
               ),
@@ -296,8 +295,8 @@ class _ChatViewState extends State<ChatView>
   }
 
   void _assignReplyMessage() {
-    if (replyMessage.value.message.isNotEmpty) {
-      replyMessage.value = const ReplyMessage();
+    if (replyMessage.value != null) {
+      replyMessage.value = null;
     }
   }
 

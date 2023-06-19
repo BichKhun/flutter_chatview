@@ -38,6 +38,8 @@ dependencies:
 
   logic_module:
     path: ../flutter_module/logic_module
+  chat:
+    path: ../flutter_module/logic_modules/chat
 
 dev_dependencies:
   flutter_test:

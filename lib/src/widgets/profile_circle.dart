@@ -20,7 +20,8 @@
  * SOFTWARE.
  */
 import 'package:flutter/material.dart';
-import 'package:chatview/src/utils/constants/constants.dart';
+import 'package:logic_module/modules/im_framework/conversation_top/entity/entity.dart';
+import 'package:logic_module/widget/round_head_widget.dart';
 
 class ProfileCircle extends StatelessWidget {
   const ProfileCircle({
@@ -59,10 +60,20 @@ class ProfileCircle extends StatelessWidget {
       child: InkWell(
         onLongPress: onLongPress,
         onTap: onTap,
-        child: CircleAvatar(
-          radius: circleRadius ?? 16,
-          backgroundImage: NetworkImage(imageUrl ?? profileImage),
+        child: RoundHeadView(
+          TopConversation()
+            ..chatId = 0
+            ..chatType = 0
+            ..displayName = ""
+            ..headFilterString = ""
+            ..headFilePath = imageUrl ?? "",
+          width: (circleRadius ?? 16) * 2,
+          height: (circleRadius ?? 16) * 2,
         ),
+        // child: CircleAvatar(
+        //   radius: circleRadius ?? 16,
+        //   backgroundImage: NetworkImage(imageUrl ?? profileImage),
+        // ),
       ),
     );
   }

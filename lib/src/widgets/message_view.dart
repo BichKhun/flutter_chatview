@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class MessageView extends StatefulWidget {
   }) : super(key: key);
 
   /// Provides message instance of chat.
-  final Message message;
+  final MessageModel message;
 
   /// Represents current message is sent by current user.
   final bool isMessageBySender;

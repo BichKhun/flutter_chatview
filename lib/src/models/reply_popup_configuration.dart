@@ -19,17 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 
 import '../values/typedefs.dart';
-import 'message.dart';
 
 class ReplyPopupConfiguration {
   /// Used for giving background color to reply snack-bar.
   final Color? backgroundColor;
 
   /// Provides builder for creating reply pop-up widget.
-  final Widget Function(Message message, bool sendByCurrentUser)?
+  final Widget Function(MessageModel message, bool sendByCurrentUser)?
       replyPopupBuilder;
 
   /// Provides callback on unSend button.

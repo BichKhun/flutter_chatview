@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/widgets/glassmorphism_reaction_popup.dart';
@@ -58,7 +59,7 @@ class ReactionPopupState extends State<ReactionPopup>
   bool get showPopUp => widget.showPopUp;
   double _yCoordinate = 0.0;
   double _xCoordinate = 0.0;
-  Message? _message;
+  MessageModel? _message;
 
   ChatController? chatController;
   ChatUser? currentUser;
@@ -171,7 +172,7 @@ class ReactionPopupState extends State<ReactionPopup>
       );
 
   void refreshWidget({
-    required Message message,
+    required MessageModel message,
     required double xCoordinate,
     required double yCoordinate,
   }) {
