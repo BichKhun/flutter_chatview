@@ -82,7 +82,7 @@ Widget lastSeenAgoBuilder(MessageModel message, String formattedDate) {
   return Padding(
     padding: const EdgeInsets.all(2),
     child: Text(
-      'Seen ${applicationDateFormatter(message.createdAt ?? DateTime.now())}    ',
+      'Seen ${applicationDateFormatter(message.sendTime ?? DateTime.now())}    ',
       style: const TextStyle(color: Colors.grey, fontSize: 12),
     ),
   );

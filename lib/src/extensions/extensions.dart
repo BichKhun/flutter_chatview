@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:chatview/chatview.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,7 @@ extension ValidateString on String {
   bool get isUrl => Uri.tryParse(this)?.isAbsolute ?? false;
 
   Widget getUserProfilePicture({
-    required ChatUser? Function(String) getChatUser,
+    required CharacterMixin? Function(String) getCharacterMixin,
     double? profileCircleRadius,
     EdgeInsets? profileCirclePadding,
   }) {
@@ -79,8 +80,8 @@ extension ValidateString on String {
       padding: profileCirclePadding ?? const EdgeInsets.only(left: 4),
       child: CircleAvatar(
         radius: profileCircleRadius ?? 8,
-        backgroundImage:
-            NetworkImage(getChatUser(this)?.profilePhoto ?? profileImage),
+        backgroundImage: NetworkImage(
+            getCharacterMixin(this)?.portraitImage ?? profileImage),
       ),
     );
   }

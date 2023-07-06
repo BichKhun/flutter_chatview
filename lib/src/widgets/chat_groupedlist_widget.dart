@@ -282,7 +282,7 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
             ? GroupedListView<MessageModel, String>(
                 shrinkWrap: true,
                 elements: snapshot.data!,
-                groupBy: (element) => element.createdAt.getDateFromDateTime,
+                groupBy: (element) => element.sendTime.getDateFromDateTime,
                 itemComparator: (message1, message2) =>
                     message1.message.compareTo(message2.message),
                 physics: const NeverScrollableScrollPhysics(),

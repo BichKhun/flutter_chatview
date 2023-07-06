@@ -1,3 +1,4 @@
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:chatview/chatview.dart';
 
@@ -13,7 +14,7 @@ class ChatViewInheritedWidget extends InheritedWidget {
   }) : super(key: key, child: child);
   final FeatureActiveConfig featureActiveConfig;
   final ChatController chatController;
-  final ChatUser currentUser;
+  final CharacterMixin currentUser;
 
   static ChatViewInheritedWidget? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<ChatViewInheritedWidget>();

@@ -27,6 +27,7 @@ import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/widgets/chat_groupedlist_widget.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:logic_module/extension/string_extension.dart';
 
 import '../../chatview.dart';
 import 'reaction_popup.dart';
@@ -127,7 +128,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
       widget.chatBackgroundConfig;
 
   FeatureActiveConfig? featureActiveConfig;
-  ChatUser? currentUser;
+  CharacterMixin? currentUser;
 
   @override
   void initState() {
@@ -213,7 +214,8 @@ class _ChatListWidgetState extends State<ChatListWidget>
                       if (featureActiveConfig?.enableReplySnackBar ?? false) {
                         _showReplyPopup(
                           message: message,
-                          sendByCurrentUser: message.sendBy == currentUser?.id,
+                          sendByCurrentUser:
+                              message.sendBy.toInt() == currentUser?.uid,
                         );
                       }
                     },

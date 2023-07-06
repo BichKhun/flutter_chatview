@@ -62,7 +62,7 @@ class ReactionPopupState extends State<ReactionPopup>
   MessageModel? _message;
 
   ChatController? chatController;
-  ChatUser? currentUser;
+  CharacterMixin? currentUser;
 
   @override
   void initState() {
@@ -164,7 +164,7 @@ class ReactionPopupState extends State<ReactionPopup>
             chatController?.setReaction(
               emoji: emoji,
               messageId: _message!.id,
-              userId: currentUser!.id,
+              userId: currentUser!.uid.toString(),
             );
           }
         },

@@ -23,8 +23,7 @@ import 'dart:async';
 
 import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
-
-import '../models/models.dart';
+import 'package:logic_module/extension/string_extension.dart';
 
 class ChatController {
   /// Represents initial message list in chat which can be add by user.
@@ -55,7 +54,7 @@ class ChatController {
   set setTypingIndicator(bool value) => _showTypingIndicator.value = value;
 
   /// Represents list of chat users
-  List<ChatUser> chatUsers;
+  List<CharacterMixin> chatUsers;
 
   ChatController({
     required this.initialMessageList,
@@ -101,7 +100,7 @@ class ChatController {
     initialMessageList[indexOfMessage] = MessageModel(
       id: messageId,
       message: message.message,
-      createdAt: message.createdAt,
+      sendTime: message.sendTime,
       sendBy: message.sendBy,
       replyMessage: message.replyMessage,
       reaction: message.reaction,
@@ -127,7 +126,7 @@ class ChatController {
     messageStreamController.sink.add(initialMessageList);
   }
 
-  /// Function for getting ChatUser object from user id
-  ChatUser getUserFromId(String userId) =>
-      chatUsers.firstWhere((element) => element.id == userId);
+  /// Function for getting CharacterMixin object from user id
+  CharacterMixin getUserFromId(String userId) =>
+      chatUsers.firstWhere((element) => element.uid == userId.toInt());
 }

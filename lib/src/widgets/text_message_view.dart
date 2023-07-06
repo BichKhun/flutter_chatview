@@ -31,7 +31,7 @@ import 'link_preview.dart';
 import 'reaction_widget.dart';
 
 class TextMessageView extends StatelessWidget {
-  const TextMessageView({
+  TextMessageView({
     Key? key,
     required this.isMessageBySender,
     required this.message,
@@ -67,6 +67,8 @@ class TextMessageView extends StatelessWidget {
   /// Allow user to set color of highlighted message.
   final Color? highlightColor;
 
+  final FocusNode? focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -97,7 +99,10 @@ class TextMessageView extends StatelessWidget {
             ),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              assembledMesageContents(textTheme),
+              GestureDetector(
+                onTap: () => focusNode?.unfocus(),
+                child: assembledMesageContents(textTheme),
+              ),
               if (message.reaction.reactions.isNotEmpty)
                 Padding(
                     padding: EdgeInsets.only(top: 8.px),
@@ -146,7 +151,7 @@ class TextMessageView extends StatelessWidget {
       ? 'images/msg_corner_blue_r.png'
       : 'images/msg_corner_grey_l.png';
 
-  RichText assembledMesageContents(TextTheme textTheme) {
+  SelectableText assembledMesageContents(TextTheme textTheme) {
     final style = _textStyle ??
         textTheme.bodyMedium!.copyWith(
           color: Colors.white,
@@ -199,10 +204,73 @@ class TextMessageView extends StatelessWidget {
             child: replyWidget,
             alignment: PlaceholderAlignment.middle,
             baseline: TextBaseline.ideographic));
+      } else if (content.contentType == MessageContentType.custom) {
+        final customContent = content as MessageContentCustom;
+        if (messageContentBuilderManager.messageContentBuilders.keys
+            .contains(customContent.customType)) {
+          final builder = messageContentBuilderManager
+              .messageContentBuilders[customContent.customType];
+          final widgetSpan =
+              builder?.buildMessageBubbleWidgetSpan(customContent);
+          if (widgetSpan != null) {
+            spans.add(widgetSpan);
+          }
+        }
       }
     }
-    return RichText(
-      text: TextSpan(children: spans),
+    return SelectableText.rich(
+      TextSpan(children: spans),
+      focusNode: focusNode,
+      contextMenuBuilder: (context, editableTextState) {
+        return _buildContextMenu(context, editableTextState);
+      },
     );
+  }
+
+  Widget _buildContextMenu(BuildContext context, EditableTextState state) {
+    final buttonItems = state.contextMenuButtonItems;
+    final selectAllButton = ContextMenuButtonItem(
+        onPressed: () {
+          state.selectAll(SelectionChangedCause.tap);
+          state.hideToolbar();
+        },
+        type: ContextMenuButtonType.selectAll);
+    buttonItems.add(selectAllButton);
+    return AdaptiveTextSelectionToolbar.buttonItems(
+        buttonItems: buttonItems, anchors: state.contextMenuAnchors);
+  }
+
+  void showPopupMenu(BuildContext context) {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final selectionMenuItems = [
+      const PopupMenuItem(
+        value: 'Copy',
+        child: Text('Copy'),
+      ),
+      const PopupMenuItem(
+        value: 'Paste',
+        child: Text('Paste'),
+      ),
+    ];
+
+    showMenu(
+      context: context,
+      items: selectionMenuItems,
+      position: RelativeRect.fromRect(
+        Rect.fromPoints(
+          Offset.zero,
+          const Offset(100, 100),
+        ),
+        Offset.zero & overlay.size,
+      ),
+    ).then((value) {
+      if (value == 'Copy') {
+        // 执行复制操作
+        print('Copy selected');
+      } else if (value == 'Paste') {
+        // 执行粘贴操作
+        print('Paste selected');
+      }
+    });
   }
 }

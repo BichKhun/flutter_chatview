@@ -130,7 +130,7 @@ class ChatView extends StatefulWidget {
   final ChatViewStateConfiguration? chatViewStateConfig;
 
   /// Provides current user which is sending messages.
-  final ChatUser currentUser;
+  final CharacterMixin currentUser;
 
   /// Provides configuration for turn on/off specific features.
   final FeatureActiveConfig featureActiveConfig;

@@ -278,7 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // _chatController.addMessage(
     //   Message(
     //     id: id.toString(),
-    //     createdAt: DateTime.now(),
+    //     sendTime: DateTime.now(),
     //     message: message,
     //     sendBy: currentUser.id,
     //     replyMessage: replyMessage,

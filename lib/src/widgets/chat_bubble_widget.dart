@@ -24,6 +24,7 @@ import 'package:chatview/src/utils/constants/constants.dart';
 import 'package:chatview/src/widgets/chat_view_inherited_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:chatview/src/extensions/extensions.dart';
+import 'package:util/util.dart';
 
 import '../../chatview.dart';
 import 'message_time_widget.dart';
@@ -100,7 +101,8 @@ class ChatBubbleWidget extends StatefulWidget {
 class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   String get replyMessage => widget.message.replyMessage.message;
 
-  bool get isMessageBySender => widget.message.sendBy == currentUser?.id;
+  bool get isMessageBySender =>
+      widget.message.sendBy.toInt() == currentUser?.uid;
 
   bool get isLastMessage =>
       chatController?.initialMessageList.last.id == widget.message.id;
@@ -109,7 +111,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
       widget.profileCircleConfig;
   FeatureActiveConfig? featureActiveConfig;
   ChatController? chatController;
-  ChatUser? currentUser;
+  CharacterMixin? currentUser;
   int? maxDuration;
 
   @override
@@ -125,7 +127,13 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
   @override
   Widget build(BuildContext context) {
     // Get user from id.
-    final messagedUser = chatController?.getUserFromId(widget.message.sendBy);
+    // final messagedUser = chatController?.getUserFromId(widget.message.sendBy);
+    final messagedUser = CharacaterUtil.getCharacterBy(
+        imid: widget.message.sendBy.toInt(),
+        chatType: widget.message.chatType,
+        isSender: widget.message.sendBy.toInt() == currentUser?.uid,
+        quickMode: true);
+    widget.message.sender = messagedUser;
     return Stack(
       children: [
         if (featureActiveConfig?.enableSwipeToSeeTime ?? true) ...[
@@ -135,7 +143,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: MessageTimeWidget(
-                  messageTime: widget.message.createdAt,
+                  messageTime: widget.message.sendTime,
                   isCurrentUser: isMessageBySender,
                   messageTimeIconColor: widget.messageTimeIconColor,
                   messageTimeTextStyle: widget.messageTimeTextStyle,
@@ -153,10 +161,11 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
     );
   }
 
-  Widget _chatBubbleWidget(ChatUser? messagedUser) {
+  Widget _chatBubbleWidget(CharacterMixin? messagedUser) {
     return Column(children: [
       Text(
-        widget.message.createdAt.getDay,
+        getMessageTimeString(
+            widget.message.sendTime.millisecondsSinceEpoch, context),
         textAlign: TextAlign.center,
         style: const TextStyle(
             fontSize: 12, color: Color(0xff9ea5b2), height: 1.5),
@@ -180,7 +189,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                     ? profileCircleConfig?.bottomPadding ?? 15
                     : profileCircleConfig?.bottomPadding ?? 2,
                 profileCirclePadding: profileCircleConfig?.padding,
-                imageUrl: messagedUser?.profilePhoto,
+                imageUrl: messagedUser?.portraitImage,
                 circleRadius: profileCircleConfig?.circleRadius,
                 onTap: () => _onAvatarTap(messagedUser),
                 onLongPress: () => _onAvatarLongPress(messagedUser),
@@ -240,7 +249,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                     ? profileCircleConfig?.bottomPadding ?? 15
                     : profileCircleConfig?.bottomPadding ?? 2,
                 profileCirclePadding: profileCircleConfig?.padding,
-                imageUrl: currentUser?.profilePhoto,
+                imageUrl: currentUser?.portraitImage,
                 circleRadius: profileCircleConfig?.circleRadius,
                 onTap: () => _onAvatarTap(messagedUser),
                 onLongPress: () => _onAvatarLongPress(messagedUser),
@@ -251,7 +260,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
     ]);
   }
 
-  void _onAvatarTap(ChatUser? user) {
+  void _onAvatarTap(CharacterMixin? user) {
     if (profileCircleConfig?.onAvatarTap != null && user != null) {
       profileCircleConfig?.onAvatarTap!(user);
     }
@@ -297,13 +306,13 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
     return const SizedBox();
   }
 
-  void _onAvatarLongPress(ChatUser? user) {
+  void _onAvatarLongPress(CharacterMixin? user) {
     if (profileCircleConfig?.onAvatarLongPress != null && user != null) {
       profileCircleConfig?.onAvatarLongPress!(user);
     }
   }
 
-  Widget _messagesWidgetColumn(ChatUser? messagedUser) {
+  Widget _messagesWidgetColumn(CharacterMixin? messagedUser) {
     return Column(
       crossAxisAlignment:
           isMessageBySender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -313,7 +322,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: Text(
-              messagedUser?.name ?? '',
+              messagedUser?.displayName ?? '',
               textAlign: TextAlign.right,
               style: widget.chatBubbleConfig?.outgoingChatBubbleConfig
                   ?.senderNameTextStyle,
@@ -323,7 +332,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
           Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Text(
-              messagedUser?.name ?? '',
+              messagedUser?.displayName ?? '',
               style: widget.chatBubbleConfig?.inComingChatBubbleConfig
                   ?.senderNameTextStyle,
             ),
@@ -359,7 +368,7 @@ class _ChatBubbleWidgetState extends State<ChatBubbleWidget> {
                       ? chatController?.setReaction(
                           emoji: heart,
                           messageId: message.id,
-                          userId: currentUser!.id,
+                          userId: currentUser!.uid.toString(),
                         )
                       : null
               : null,

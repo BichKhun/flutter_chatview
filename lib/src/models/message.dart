@@ -34,7 +34,7 @@ class Message {
   String message;
 
   /// Provides message created date time.
-  DateTime createdAt = DateTime.now();
+  DateTime sendTime = DateTime.now();
 
   /// Provides id of sender of message.
   String sendBy;
@@ -58,14 +58,15 @@ class Message {
     this.id = '',
     this.message = '',
     this.sendBy = '',
-    DateTime? createdAt,
+    DateTime? sendTime,
+    // this.sendTime = DateTime.now(),
     // this.createdAt = DateTime.now(),
     this.replyMessage = const ReplyMessage(),
     Reaction? reaction,
     this.messageType = MessageType.text,
     this.voiceMessageDuration,
     MessageStatus status = MessageStatus.pending,
-  })  : createdAt = createdAt ?? DateTime.now(),
+  })  : sendTime = sendTime ?? DateTime.now(),
         reaction = reaction ?? Reaction(reactions: [], reactedUserIds: []),
         key = GlobalKey(),
         _status = ValueNotifier(status),
@@ -95,7 +96,7 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) => Message(
       id: json["id"],
       message: json["message"],
-      createdAt: json["createdAt"],
+      sendTime: json["sendTime"],
       sendBy: json["sendBy"],
       replyMessage: ReplyMessage.fromJson(json["reply_message"]),
       reaction: Reaction.fromJson(json["reaction"]),
@@ -106,7 +107,7 @@ class Message {
   Map<String, dynamic> toJson() => {
         'id': id,
         'message': message,
-        'createdAt': createdAt,
+        'sendTime': sendTime,
         'sendBy': sendBy,
         'reply_message': replyMessage.toJson(),
         'reaction': reaction.toJson(),

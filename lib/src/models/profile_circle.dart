@@ -19,9 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:chat/chat.dart';
 import 'package:flutter/material.dart';
-
-import '../../chatview.dart';
 
 class ProfileCircleConfiguration {
   /// Used to give padding to profile circle.
@@ -37,10 +36,10 @@ class ProfileCircleConfiguration {
   final double? circleRadius;
 
   /// Provides callback when user tap on profile circle.
-  final void Function(ChatUser)? onAvatarTap;
+  final void Function(CharacterMixin)? onAvatarTap;
 
   /// Provides callback when user long press on profile circle.
-  final void Function(ChatUser)? onAvatarLongPress;
+  final void Function(CharacterMixin)? onAvatarLongPress;
 
   const ProfileCircleConfiguration({
     this.onAvatarTap,

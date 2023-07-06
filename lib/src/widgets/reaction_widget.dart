@@ -139,7 +139,7 @@ class _ReactionWidgetState extends State<ReactionWidget> {
                 //       (reactedUserIndex) => widget
                 //           .reaction.reactedUserIds[reactedUserIndex]
                 //           .getUserProfilePicture(
-                //         getChatUser: (userId) =>
+                //         getCharacterMixin: (userId) =>
                 //             chatController?.getUserFromId(userId),
                 //         profileCirclePadding:
                 //             messageReactionConfig?.profileCirclePadding,
