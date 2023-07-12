@@ -88,6 +88,7 @@ class ChatViewAppBar extends StatelessWidget {
     return Material(
       elevation: elevation ?? 1,
       child: Container(
+        height: 60,
         padding: padding ??
             EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
@@ -116,25 +117,26 @@ class ChatViewAppBar extends StatelessWidget {
                       child: CircleAvatar(
                           backgroundImage: NetworkImage(profilePicture!)),
                     ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        chatTitle,
-                        style: chatTitleTextStyle ??
-                            const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.25,
-                            ),
-                      ),
-                      if (userStatus != null)
-                        Text(
-                          userStatus!,
-                          style: userStatusTextStyle,
-                        ),
-                    ],
-                  ),
+                  if (userStatus != null)
+                    Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Image.asset(
+                            'images/online_status/status_online_ready.png',
+                            package: 'chatview',
+                            width: 10,
+                            height: 10)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Text(
+                      chatTitle,
+                      style: chatTitleTextStyle ??
+                          const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.25,
+                          ),
+                    ),
+                  )
                 ],
               ),
             ),
